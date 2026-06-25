@@ -7,6 +7,7 @@ import {Trans} from '@lingui/react/macro'
 import {useFocusEffect} from '@react-navigation/native'
 import {useQueryClient} from '@tanstack/react-query'
 
+import {BRAND_FEATURES} from '#/lib/brand'
 import {VIDEO_FEED_URI} from '#/lib/constants'
 import {makeCustomFeedLink} from '#/lib/routes/links'
 import {RQKEY, usePostFeedQuery} from '#/state/queries/post-feed'
@@ -33,7 +34,9 @@ const FEED_PARAMS: {
 
 export function ExploreTrendingVideos() {
   const gutters = useGutters([0, 'base'])
-  const {data, isLoading, error} = usePostFeedQuery(FEED_DESC, FEED_PARAMS)
+  const {data, isLoading, error} = usePostFeedQuery(FEED_DESC, FEED_PARAMS, {
+    enabled: !BRAND_FEATURES.hideTrending,
+  })
 
   // Refetch on tab change if nothing else is using this query.
   const queryClient = useQueryClient()
@@ -72,6 +75,10 @@ export function ExploreTrendingVideos() {
   //   },
   //   [addSavedFeeds],
   // )
+
+  if (BRAND_FEATURES.hideTrending) {
+    return null
+  }
 
   if (error) {
     return null

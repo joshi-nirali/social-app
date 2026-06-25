@@ -5,6 +5,7 @@ import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 
+import {BRAND_FEATURES} from '#/lib/brand'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {useTrendingSettings} from '#/state/preferences/trending'
 import {useGetTrendsQuery} from '#/state/queries/trending/useGetTrendsQuery'
@@ -25,6 +26,9 @@ const TOPIC_COUNT = 5
 export function ExploreTrendingTopics() {
   const {enabled} = useTrendingConfig()
   const {trendingDisabled} = useTrendingSettings()
+  if (BRAND_FEATURES.hideTrending) {
+    return null
+  }
   return enabled && !trendingDisabled ? <Inner /> : null
 }
 

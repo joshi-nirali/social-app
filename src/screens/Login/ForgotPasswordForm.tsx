@@ -6,6 +6,7 @@ import {useLingui} from '@lingui/react'
 import {Trans} from '@lingui/react/macro'
 import * as EmailValidator from 'email-validator'
 
+import {BRAND_FEATURES} from '#/lib/brand'
 import {cleanError, isNetworkError} from '#/lib/strings/errors'
 import {logger} from '#/logger'
 import {Agent} from '#/state/session/agent'
@@ -80,16 +81,18 @@ export const ForgotPasswordForm = ({
     <FormContainer
       testID="forgotPasswordForm"
       titleText={<Trans>Reset password</Trans>}>
-      <View>
-        <TextField.LabelText>
-          <Trans>Hosting provider</Trans>
-        </TextField.LabelText>
-        <HostingProvider
-          serviceUrl={serviceUrl}
-          onSelectServiceUrl={setServiceUrl}
-          onOpenDialog={onPressSelectService}
-        />
-      </View>
+      {!BRAND_FEATURES.hideHostingProvider && (
+        <View>
+          <TextField.LabelText>
+            <Trans>Hosting provider</Trans>
+          </TextField.LabelText>
+          <HostingProvider
+            serviceUrl={serviceUrl}
+            onSelectServiceUrl={setServiceUrl}
+            onOpenDialog={onPressSelectService}
+          />
+        </View>
+      )}
       <View>
         <TextField.LabelText>
           <Trans>Email address</Trans>

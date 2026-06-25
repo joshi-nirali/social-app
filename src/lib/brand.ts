@@ -20,3 +20,8 @@ export const BRAND_URLS = {
   community: `${BRAND_HOST}/community-guidelines`,
   download: `${BRAND_HOST}/download`,
 }
+
+export const BRAND_FEATURES = {
+  hideTrending: true,
+  hideHostingProvider: true,
+}
