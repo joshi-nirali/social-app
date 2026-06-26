@@ -15,6 +15,7 @@ import {
 
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {useAgent} from '#/state/session'
+import {getActiveBrand} from '#/brand/activeBrand'
 import {
   didOrHandleUriMatches,
   embedViewRecordToPostView,
@@ -116,6 +117,12 @@ export function useSearchPostsQuery({
           }
         }
 
+        const brand = getActiveBrand()
+        const filterEnabled = brand.features.filterSearchToBrand
+        const brandDomain = filterEnabled
+          ? brand.pds.serviceUrl.replace(/^https?:\/\//, '').toLowerCase()
+          : ''
+
         const result = {
           ...data,
           pages: [
@@ -124,6 +131,13 @@ export function useSearchPostsQuery({
               return {
                 ...page,
                 posts: page.posts.filter(post => {
+                  if (filterEnabled && brandDomain) {
+                    if (
+                      !post.author.handle.toLowerCase().endsWith(brandDomain)
+                    ) {
+                      return false
+                    }
+                  }
                   const mod = moderatePost(post, moderationOpts!)
                   return !mod.ui('contentList').filter
                 }),

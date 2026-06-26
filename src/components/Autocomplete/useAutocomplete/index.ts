@@ -13,6 +13,7 @@ import {
   type AutocompleteItemType,
   type AutocompleteProfile,
 } from '#/components/Autocomplete/types'
+import {getActiveBrand} from '#/brand/activeBrand'
 import {useEmojiSearch} from './useEmojiSearch'
 
 const DEFAULT_MOD_OPTS = {
@@ -74,11 +75,22 @@ export function useAutocomplete({
         const seen = new Set<string>()
         let results: AutocompleteItem[] = []
 
+        const brand = getActiveBrand()
+        const filterEnabled = brand.features.filterSearchToBrand
+        const brandDomain = filterEnabled
+          ? brand.pds.serviceUrl.replace(/^https?:\/\//, '').toLowerCase()
+          : ''
+
         for (const item of items) {
           if (seen.has(item.key)) continue
           seen.add(item.key)
 
           if (item.type === 'profile') {
+            if (filterEnabled && brandDomain) {
+              if (!item.profile.handle.toLowerCase().endsWith(brandDomain)) {
+                continue
+              }
+            }
             const moderated = moderateProfileItem({
               query: q,
               item,
